@@ -18,6 +18,7 @@ do
    do
        sp = gfx.sprite.new(brickTiles:getImage(col))
        sp:moveTo(50+16*col+8,16+32*row+16 )
+       sp:setCollideRect(0, 0, sp:getSize())
        sp:setGroups({1})
        sp:setCollidesWithGroups({3})
        sp:add()
@@ -37,10 +38,10 @@ paddleSprite:moveTo(375,120)
 local ballSprite = gfx.sprite.new(gfx.image.new("SystemAssets/Ball"))
 ballSprite:setCollideRect(0,0,ballSprite:getSize())
 ballSprite:setGroups({3})
-ballSprite:setCollidesWithGroups({1,2})
+ballSprite:setCollidesWithGroups({1, 2})
 ballSprite:add()
 ballSprite:moveTo(160,30)
-local ballVelocity = {50,50}
+local ballVelocity = {100,100}
 
 function moveBall(deltaT)
     ballSprite:moveBy(ballVelocity[1]*deltaT, ballVelocity[2]*deltaT)
@@ -81,6 +82,31 @@ function detectBallPaddleCollision()
    end
 end
 
+function detectBallBrickCollision()
+    local collisionList = ballSprite:overlappingSprites()
+    local hitcount = 0
+    for i, obj in pairs(collisionList) do
+        if obj == paddleSprite then
+            print("Paddle - discard")
+        else
+            obj:setCollisionsEnabled(false)
+            obj:remove()
+            if hitcount == 0 then
+                if (ballVelocity[1] < 0 and ballSprite.x > obj.x) or (ballVelocity[1] > 0 and ballSprite.x < obj. x) then
+                    ballVelocity[1] = -ballVelocity[1]
+                else
+                    ballVelocity[2] = -ballVelocity[2]
+                end
+            end
+            hitcount += 1
+            if hitcount == 2 then
+                break
+            end
+            -- ballVelocity.y = -ballVelocity.y
+        end
+    end
+end
+
 function playdate.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(0, 0, 400, 240)
@@ -92,6 +118,7 @@ function playdate.update()
     moveBall(deltaTime)
     respondToRotor()
     detectBallPaddleCollision()
+    detectBallBrickCollision()
     gfx.sprite.update()
     playdate.drawFPS(0,0)
 end
