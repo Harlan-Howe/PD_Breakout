@@ -18,6 +18,8 @@ do
    do
        sp = gfx.sprite.new(brickTiles:getImage(col))
        sp:moveTo(50+16*col+8,16+32*row+16 )
+       sp:setGroups({1})
+       sp:setCollidesWithGroups({3})
        sp:add()
        print(row,col)
    end 
@@ -26,12 +28,16 @@ end
 -- create paddle
 local paddleSprite = gfx.sprite.new(gfx.image.new("SystemAssets/Paddle"))
 paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
+paddleSprite:setGroups({2})
+paddleSprite:setCollidesWithGroups({3})
 paddleSprite:add()
 paddleSprite:moveTo(375,120)
 
 -- create ball
 local ballSprite = gfx.sprite.new(gfx.image.new("SystemAssets/Ball"))
 ballSprite:setCollideRect(0,0,ballSprite:getSize())
+ballSprite:setGroups({3})
+ballSprite:setCollidesWithGroups({1,2})
 ballSprite:add()
 ballSprite:moveTo(160,30)
 local ballVelocity = {50,50}
