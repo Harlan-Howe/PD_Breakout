@@ -69,6 +69,18 @@ function respondToRotor()
     paddleSprite:moveTo(375,y)
 end
 
+function detectBallPaddleCollision()
+   local collisionList = paddleSprite:overlappingSprites()
+   if #collisionList == 1 then
+       if ballVelocity[1] > 0 then
+           ballVelocity[1] = -ballVelocity[1]
+           ballSprite.x = 2 * (paddleSprite.x - 6) - ballSprite.x
+           vertical_difference = ballSprite.y - paddleSprite.y
+           ballVelocity[2] += vertical_difference
+       end
+   end
+end
+
 function playdate.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(0, 0, 400, 240)
@@ -79,6 +91,7 @@ function playdate.update()
     playdate.resetElapsedTime()
     moveBall(deltaTime)
     respondToRotor()
+    detectBallPaddleCollision()
     gfx.sprite.update()
     playdate.drawFPS(0,0)
 end
