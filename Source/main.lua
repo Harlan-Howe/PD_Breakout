@@ -1,4 +1,6 @@
 import "CoreLibs/math"
+import "CoreLibs/graphics"
+
 local gfx = playdate.graphics
 
 local kbottomMargin = 234
@@ -146,18 +148,21 @@ function detectBallBrickCollision()
                paddleSprite:setImage(bigPaddleImage)
                paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
                paddleSize = kbigPaddleSize
+               score+=1
             end
             if tag == 3 then
                speedMultiplier = 1
-               
+               score+=2
             end
             if tag == 2 then
                paddleSprite:setImage(smallPaddleImage)
                paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
                paddleSize = ksmallPaddleSize
+               score+=3
             end
             if tag == 1 then
                speedMultiplier = 2
+               score+=4
             end
         end
     end
@@ -178,4 +183,5 @@ function playdate.update()
     gfx.sprite.update()
     gfx.drawLine(0,16,400,16)
     playdate.drawFPS(0,0)
+    gfx.drawTextAligned(score, 200, 0, kTextAlignment.center)
 end
