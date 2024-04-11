@@ -11,8 +11,11 @@ local krightMargin = 394
 local kNumCols = 5
 local kNumBricksPerCol = 7
 
+local lives = 3
+
 local score = 0
 local ballInPlay = false
+local playing = true
 
 local bigPaddleImage = gfx.image.new("SystemAssets/Paddle")
 local smallPaddleImage = gfx.image.new("SystemAssets/Paddle2")
@@ -72,6 +75,7 @@ function moveBall(deltaT)
         ballSprite:remove()
         ballInPlay = false
         print("missed the ball", ballSprite.x)
+        lives -= 1
         return
     end
     if ballSprite.y > kbottomMargin then
@@ -195,6 +199,9 @@ function playdate.update()
     detectBallBrickCollision()
     gfx.sprite.update()
     gfx.drawLine(0,16,400,16)
+    for x = 1, lives do
+       gfx.drawCircleAtPoint(390-15*x, 7, 5)
+    end
     playdate.drawFPS(0,0)
     gfx.drawTextAligned(score, 200, 0, kTextAlignment.center)
 end
