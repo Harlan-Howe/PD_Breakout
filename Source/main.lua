@@ -18,6 +18,7 @@ local lives = 3
 local score = 0
 local ballInPlay = false
 local playing = true
+local bricksRemaining = 0
 
 local bigPaddleImage = gfx.image.new("SystemAssets/Paddle")
 local smallPaddleImage = gfx.image.new("SystemAssets/Paddle2")
@@ -49,6 +50,7 @@ do
        print(row,col)
    end 
 end
+bricksRemaining = #brickList
 
 -- create paddle
 local paddleSprite = gfx.sprite.new(bigPaddleImage)
@@ -155,6 +157,8 @@ function detectBallBrickCollision()
             if tag > 1 then
                obj:setCollisionsEnabled(false)
                obj:remove()
+               bricksRemaining -= 1
+               print("Bricks remaining"..bricksRemaining)
             end
             if tag == 5 then
                paddleSprite:setImage(bigPaddleImage)
@@ -206,15 +210,26 @@ function resetbricks()
    for i,brk in pairs(brickList) do
       brk:setCollisionsEnabled(true)
       brk:add()
-      velocityMultiplier = 1
+      if brk:getTag() == 6 then
+         brk:setTag(1)
+         brk:setImage(brickTiles:getImage(1))
+      end
    end
+   bricksRemaining = #brickList
 end
 
 function resetGame()
    resetbricks()
+   velocityMultiplier = 1
    lives = 3
    score = 0
    ballIsInPlay = false
+end
+
+function checkIsLevelCleared()
+   if bricksRemaining < 1 and ballSprite.x > 250 then
+      resetbricks()
+   end
 end
 
 function playdate.update()
@@ -240,6 +255,7 @@ function playdate.update()
     elseif not ballInPlay then
        gfx.drawTextAligned("Press B.",300,100, kTextAlignment.center)
     end
+    checkIsLevelCleared()
     playdate.drawFPS(0,0)
     gfx.drawTextAligned(score, 200, 0, kTextAlignment.center)
 end
