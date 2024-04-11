@@ -117,6 +117,8 @@ function playdate.BButtonUp()
     end
     print("launching ball")
     speedMultiplier = 1
+    paddleSprite:setImage(bigPaddleImage)
+    paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
     ballSprite:add()
     ballSprite:moveTo(160, math.random(20, 220))
     ballVelocity[1] = 125
@@ -224,6 +226,8 @@ function resetGame()
    lives = 3
    score = 0
    ballIsInPlay = false
+   paddleSprite:setImage(bigPaddleImage)
+   paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
 end
 
 function checkIsLevelCleared()
