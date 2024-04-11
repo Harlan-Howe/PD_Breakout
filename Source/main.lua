@@ -126,7 +126,7 @@ end
 function playdate.AButtonUp()
    print("A pressed")
    if not playing then
-     reset()
+     resetGame()
      playing = true 
    end
 end
@@ -202,15 +202,19 @@ function detectBallBrickCollision()
     end
 end
 
-function reset()
+function resetbricks()
    for i,brk in pairs(brickList) do
       brk:setCollisionsEnabled(true)
       brk:add()
       velocityMultiplier = 1
-      lives = 3
-      score = 0
-      ballIsInPlay = false
    end
+end
+
+function resetGame()
+   resetbricks()
+   lives = 3
+   score = 0
+   ballIsInPlay = false
 end
 
 function playdate.update()
