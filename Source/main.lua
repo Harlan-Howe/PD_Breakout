@@ -132,17 +132,6 @@ function detectBallBrickCollision()
             print(tag)
             obj:setCollisionsEnabled(false)
             obj:remove()
-            if hitcount == 0 then
-                if (ballVelocity[1] < 0 and ballSprite.x > obj.x) or (ballVelocity[1] > 0 and ballSprite.x < obj. x) then
-                    ballVelocity[1] = -ballVelocity[1]
-                else
-                    ballVelocity[2] = -ballVelocity[2]
-                end
-            end
-            hitcount += 1
-            if hitcount == 2 then
-                break
-            end
             
             if tag == 4 then
                paddleSprite:setImage(bigPaddleImage)
@@ -164,6 +153,20 @@ function detectBallBrickCollision()
                speedMultiplier = 2
                score+=4
             end
+            
+            if hitcount == 0 then
+                if (ballVelocity[1] < 0 and ballSprite.x > obj.x) or (ballVelocity[1] > 0 and ballSprite.x < obj. x) then
+                    ballVelocity[1] = -ballVelocity[1]
+                else
+                    ballVelocity[2] = -ballVelocity[2]
+                end
+            end
+            hitcount += 1
+            if hitcount == 2 then
+                break
+            end
+            
+            
         end
     end
 end
