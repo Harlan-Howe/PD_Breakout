@@ -8,6 +8,8 @@ local ktopMargin= 22
 local kleftMargin= 6
 local krightMargin = 394
 
+local brickList = {}
+
 local kNumCols = 5
 local kNumBricksPerCol = 7
 
@@ -37,6 +39,7 @@ do
    for col= 1,kNumCols
    do
        sp = gfx.sprite.new(brickTiles:getImage(col))
+       brickList[col+kNumCols*row] = sp
        sp:moveTo(50+16*col+8,16+32*row+16 )
        sp:setCollideRect(0, 0, sp:getSize())
        sp:setGroups({1})
@@ -183,6 +186,17 @@ function detectBallBrickCollision()
             
         end
     end
+end
+
+function reset()
+   for i,brk in pairs(brickList) do
+      brk:setCollisionsEnabled(true)
+      brk:add()
+      velocityMultiplier = 1
+      lives = 3
+      score = 0
+      ballIsInPlay = false
+   end
 end
 
 function playdate.update()
