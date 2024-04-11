@@ -8,7 +8,7 @@ local ktopMargin= 22
 local kleftMargin= 6
 local krightMargin = 394
 
-local kNumRows = 4
+local kNumCols = 5
 local kNumBricksPerCol = 7
 
 local score = 0
@@ -31,7 +31,7 @@ if brickTiles == nil then
 end
 for row = 0,kNumBricksPerCol-1
 do
-   for col= 1,kNumRows
+   for col= 1,kNumCols
    do
        sp = gfx.sprite.new(brickTiles:getImage(col))
        sp:moveTo(50+16*col+8,16+32*row+16 )
@@ -101,6 +101,7 @@ function playdate.BButtonUp()
         return
     end
     print("launching ball")
+    speedMultiplier = 1
     ballSprite:add()
     ballSprite:moveTo(160, math.random(20, 220))
     ballVelocity[1] = 125
@@ -130,28 +131,37 @@ function detectBallBrickCollision()
         else
             local tag = obj:getTag()
             print(tag)
-            obj:setCollisionsEnabled(false)
-            obj:remove()
-            
-            if tag == 4 then
+            if tag > 1 then
+               obj:setCollisionsEnabled(false)
+               obj:remove()
+            end
+            if tag == 5 then
                paddleSprite:setImage(bigPaddleImage)
                paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
                paddleSize = kbigPaddleSize
                score+=1
             end
-            if tag == 3 then
+            if tag == 4 then
                speedMultiplier = 1
                score+=2
             end
-            if tag == 2 then
+            if tag == 3 then
                paddleSprite:setImage(smallPaddleImage)
                paddleSprite:setCollideRect(0, 0, paddleSprite:getSize())
                paddleSize = ksmallPaddleSize
                score+=3
             end
-            if tag == 1 then
+            if tag == 2 then
                speedMultiplier = 2
                score+=4
+            end
+            if tag == 1 then
+               obj:setTag(6)
+               obj:setImage(brickTiles:getImage(6))
+               score+=5
+            end
+            if tag == 6 then
+               score+=6
             end
             
             if hitcount == 0 then
