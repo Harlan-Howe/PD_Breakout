@@ -79,6 +79,9 @@ function moveBall(deltaT)
         ballInPlay = false
         print("missed the ball", ballSprite.x)
         lives -= 1
+        if lives == 0 then
+           playing = false
+        end
         return
     end
     if ballSprite.y > kbottomMargin then
@@ -104,6 +107,9 @@ end
 
 function playdate.BButtonUp()
     print("B pressed")
+    if not playing then
+       return
+    end
     if ballInPlay then
         return
     end
@@ -115,6 +121,14 @@ function playdate.BButtonUp()
     ballVelocity[2] = math.random(-150,150)
     
     ballInPlay = true
+end
+
+function playdate.AButtonUp()
+   print("A pressed")
+   if not playing then
+     reset()
+     playing = true 
+   end
 end
 
 function detectBallPaddleCollision()
@@ -215,6 +229,12 @@ function playdate.update()
     gfx.drawLine(0,16,400,16)
     for x = 1, lives do
        gfx.drawCircleAtPoint(390-15*x, 7, 5)
+    end
+    if not playing then
+       gfx.drawTextAligned("Game over.",300,90, kTextAlignment.center)
+       gfx.drawTextAligned("Press A.",300,110, kTextAlignment.center)
+    elseif not ballInPlay then
+       gfx.drawTextAligned("Press B.",300,100, kTextAlignment.center)
     end
     playdate.drawFPS(0,0)
     gfx.drawTextAligned(score, 200, 0, kTextAlignment.center)
