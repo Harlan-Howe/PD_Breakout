@@ -17,7 +17,7 @@ local kNumCols = 5
 local kNumBricksPerCol = 7
 
 local lives = 3
-
+local level = 1
 local score = 0
 local ballInPlay = false
 local playing = true
@@ -79,7 +79,7 @@ function moveBall(deltaT)
     if not ballInPlay then
         return
     end
-    ballSprite:moveBy(ballVelocity[1]*deltaT*speedMultiplier, ballVelocity[2]*deltaT*speedMultiplier)
+    ballSprite:moveBy(ballVelocity[1]*deltaT*speedMultiplier*(0.9+level*0.1), ballVelocity[2]*deltaT*speedMultiplier*(0.9+level*0.1))
     if ballSprite.x > krightMargin then
         -- ballVelocity[1] = -1*math.abs(ballVelocity[1])
         -- ballSprite.x = 2 * krightMargin - ballSprite.x
@@ -229,10 +229,12 @@ function resetbricks()
       end
    end
    bricksRemaining = #brickList
+   level += 1
 end
 
 function resetGame()
    resetbricks()
+   level = 1
    velocityMultiplier = 1
    lives = 3
    score = 0
@@ -271,6 +273,7 @@ function playdate.update()
        gfx.drawTextAligned("Press B.",300,100, kTextAlignment.center)
     end
     checkIsLevelCleared()
-    playdate.drawFPS(0,0)
+    -- playdate.drawFPS(0,0)
+    gfx.drawTextAligned("level :"..level, 5, 0, kTextAlignment.left)
     gfx.drawTextAligned(score, 200, 0, kTextAlignment.center)
 end
