@@ -1,6 +1,9 @@
 import "CoreLibs/math"
 import "CoreLibs/graphics"
+import "pulp-audio"
 
+
+local audio = pulp.audio
 local gfx = playdate.graphics
 
 local kbottomMargin = 234
@@ -28,6 +31,9 @@ local ksmallPaddleSize = 36
 local paddleSize = kbigPaddleSize
 
 local speedMultiplier = 1
+
+-- load sounds
+pulp.audio.init("SystemAssets/Audio/pulp-songs.json","SystemAssets/Audio/pulp-sounds.json")
 
 -- create bricks
 local brickTiles, err = gfx.imagetable.new("SystemAssets/Bricks")
@@ -79,7 +85,7 @@ function moveBall(deltaT)
         -- ballSprite.x = 2 * krightMargin - ballSprite.x
         ballSprite:remove()
         ballInPlay = false
-        print("missed the ball", ballSprite.x)
+        audio.playSound("miss")
         lives -= 1
         if lives == 0 then
            playing = false
@@ -89,14 +95,17 @@ function moveBall(deltaT)
     if ballSprite.y > kbottomMargin then
         ballVelocity[2] = -1*math.abs(ballVelocity[2])
         ballSprite.y = 2 * kbottomMargin - ballSprite.y
+        audio.playSound("wall")
     end
     if ballSprite.x < kleftMargin then
         ballVelocity[1] = math.abs(ballVelocity[1])
         ballSprite.x = 2 * kleftMargin - ballSprite.x
+        audio.playSound("wall")
     end
     if ballSprite.y < ktopMargin then
         ballVelocity[2] = math.abs(ballVelocity[2])
         ballSprite.y = 2 * ktopMargin - ballSprite.y
+        audio.playSound("wall")
     end
 end
 
@@ -123,7 +132,7 @@ function playdate.BButtonUp()
     ballSprite:moveTo(160, math.random(20, 220))
     ballVelocity[1] = 125
     ballVelocity[2] = math.random(-150,150)
-    
+
     ballInPlay = true
 end
 
@@ -143,6 +152,7 @@ function detectBallPaddleCollision()
            ballSprite.x = 2 * (paddleSprite.x - 6) - ballSprite.x
            vertical_difference = ballSprite.y - paddleSprite.y
            ballVelocity[2] += vertical_difference * 2 * speedMultiplier
+           audio.playSound("paddle")
        end
    end
 end
@@ -197,6 +207,7 @@ function detectBallBrickCollision()
                 else
                     ballVelocity[2] = -ballVelocity[2]
                 end
+                audio.playSound("brick")
             end
             hitcount += 1
             if hitcount == 2 then
@@ -240,7 +251,7 @@ function playdate.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(0, 0, 400, 240)
     -- theBrick:draw(100,100)
-    
+    audio.update()
     -- playdate.timer.updateTimers()
     local deltaTime = playdate.getElapsedTime()
     playdate.resetElapsedTime()
